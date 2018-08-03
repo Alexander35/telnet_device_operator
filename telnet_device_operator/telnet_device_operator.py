@@ -11,16 +11,13 @@ class IOSTelnetOperator():
 	def connect(self):
 		self.connection = telnetlib.Telnet(self.hostname)
 		self.connection.read_until(b"Username: ")
-		# print(bytes((self.username+'\n').encode('ascii')))
 		self.connection.write(bytes((self.username+'\n').encode('ascii')))
 		self.connection.read_until(b"Password: ")
 		self.connection.write(bytes((self.password+'\n').encode('ascii')))	
 		self.device_name = self.connection.read_some()
 		self.device_name = bytes(self.device_name.decode('ascii').strip('\r\n'), 'ascii')
 		self.connection.write(bytes(('terminal length 0'+'\n').encode('ascii')))
-		print(self.connection.read_until(self.device_name))
-		self.connection.write(bytes(('show running-config'+'\n').encode('ascii')))
-		output = self.connection.read_until(self.device_name)
+		self.connection.read_until(self.device_name)
 
 	def close(self):
 		self.connection.close()
@@ -53,6 +50,7 @@ def main():
 	# output = ITH.config_operation('config', test_func)
 
 	print(output)
+	print(ITO.get_device_name())
 
 if __name__ == '__main__':
 	main()
