@@ -13,9 +13,9 @@ class IOSTelnetOperator():
 		self.connection.read_until(b"Username: ")
 		self.connection.write(bytes((self.username+'\n').encode('ascii')))
 		self.connection.read_until(b"Password: ")
-		self.connection.write(bytes((self.password+'\n').encode('ascii')))	
-		self.device_name = self.connection.read_some()
-		self.device_name = bytes(self.device_name.decode('ascii').strip('\r\n'), 'ascii')
+		self.connection.write(bytes((self.password+'\n').encode('ascii')))
+		self.device_name = self.connection.read_until(b"#")
+		self.device_name = bytes(self.device_name.decode('ascii').split('\r\n')[-1], 'ascii')
 		self.connection.write(bytes(('terminal length 0'+'\n').encode('ascii')))
 		self.connection.read_until(self.device_name)
 
