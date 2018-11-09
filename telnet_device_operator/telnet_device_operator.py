@@ -19,19 +19,19 @@ class IOSTelnetOperator():
 
             (status, _, self.device_name) = self.connection.expect([b".+#"], 5)
             if status != 0:
-                return {'unexpected_error': self.device_name}
+                return {'unexpected_error': self.device_name.decode('ascii')}
 
             self.device_name = bytes(self.device_name.decode('ascii').split('\r\n')[-1], 'ascii')
             self.connection.write(bytes(('terminal length 0'+'\n').encode('ascii')))
             self.connection.read_until(self.device_name)
         except gaierror as exc:
-            return {'hostname_error': exc}
+            return {'hostname_error': '{}'.format(exc)}
         except TimeoutError as exc:
-            return {'timeout_error': exc}
+            return {'timeout_error': '{}'.format(exc)}
         except EOFError as exc:
             return {'eof_error': exc}
         except Exception as exc:
-            return {'other_exception': exc}
+            return {'other_exception': '{}'.format(exc)}
 
     def close(self):
         self.connection.close()
