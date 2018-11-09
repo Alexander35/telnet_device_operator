@@ -29,7 +29,7 @@ class IOSTelnetOperator():
         except TimeoutError as exc:
             return {'timeout_error': '{}'.format(exc)}
         except EOFError as exc:
-            return {'eof_error': exc}
+            return {'eof_error': '{}'.format(exc)}
         except Exception as exc:
             return {'other_exception': '{}'.format(exc)}
 
@@ -57,7 +57,7 @@ def test_func(raw_data):
     print(raw_data)
 
 def main():
-    ITO = IOSTelnetOperator('ipv4', 'username', 'password')
+    ITO = IOSTelnetOperator('10.11.0.1', 'everiste', 'wert')
     status = ITO.connect()
     if status is not None:
         print(status)
