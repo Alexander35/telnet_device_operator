@@ -11,12 +11,16 @@ class IOSTelnetOperator():
 
     def connect(self):
         try:
-            self.connection = telnetlib.Telnet(self.hostname)
-            self.connection.read_until(b"Username: ")
+            self.connection = telnetlib.Telnet(self.hostname, self.port, 20)
+            self.connection.expect([b"Username: "], 5)
             self.connection.write(bytes((self.username+'\n').encode('ascii')))
-            self.connection.read_until(b"Password: ")
+            self.connection.expect([b"Password: "], 5)
             self.connection.write(bytes((self.password+'\n').encode('ascii')))
-            self.device_name = self.connection.read_until(b"#")
+
+            (status, _, self.device_name) = self.connection.expect([b".+#"], 5)
+            if status != 0:
+                return {'unexpected_error': self.device_name}
+
             self.device_name = bytes(self.device_name.decode('ascii').split('\r\n')[-1], 'ascii')
             self.connection.write(bytes(('terminal length 0'+'\n').encode('ascii')))
             self.connection.read_until(self.device_name)
