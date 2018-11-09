@@ -57,7 +57,7 @@ def test_func(raw_data):
     print(raw_data)
 
 def main():
-    ITO = IOSTelnetOperator('10.11.0.1', 'everiste', 'wert')
+    ITO = IOSTelnetOperator('ipv4', 'username', 'password')
     status = ITO.connect()
     if status is not None:
         print(status)
